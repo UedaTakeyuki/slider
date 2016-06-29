@@ -1,0 +1,1 @@
+cat /home/pi/.version | tail -n 1

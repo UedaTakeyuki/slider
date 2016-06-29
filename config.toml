@@ -1,0 +1,14 @@
+[sensors]
+# data [[名前、単位、送信、保存],...]
+
+  [sensors.mh_z19]
+  data = [["CO2","ppm","gen_sender","gen_saver"]]
+
+  [sensors.dht22]
+  data = [["temp","℃","gen_sender","gen_saver"],
+  				["humidity","%","gen_sender","gen_saver"],
+  				["humiditydeficit","g/㎥","gen_sender","gen_saver"]]
+
+[imaging]
+	[imaging.uvc]
+	data =["pic","one","gen_pic_sender", "gen_pic_saver"]
