@@ -18,14 +18,14 @@ def check2():
     return num[1]
 
 if __name__ == '__main__':
-    num = check()
-    print num
-    if num == "0":
-        logging.info("### gal4 kicked! ###")
-        p = subprocess.Popen(gal3_script, shell=True)
-        # commands.getstatusoutput(gal3_script)
-    num = check()
-    print num
+ #   num = check()
+ #   print num
+ #   if num == "0":
+ #       logging.info("### gal4 kicked! ###")
+ #       p = subprocess.Popen(gal3_script, shell=True)
+ #       # commands.getstatusoutput(gal3_script)
+ #   num = check()
+ #   print num
 
     num = check2()
     print num
@@ -33,5 +33,5 @@ if __name__ == '__main__':
         logging.info("### clock_note kicked! ###")
         p = subprocess.Popen("sudo python3 /home/pi/SCRIPT/clock_note.py &", shell=True)
         # commands.getstatusoutput(gal3_script)
-    num = check()
-    print num
+#    num = check()
+#    print num

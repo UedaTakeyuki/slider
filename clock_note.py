@@ -7,7 +7,7 @@ import sys
 #sys.path.append("/home/osmc/MySCRIPT")
 #sys.path.append("/home/osmc/MySCRIPT/quick2wire-python-api")
 #sys.path.append(os.getcwd()+"/vendor/quick2wire-python-api/quick2wire")
-sys.path.append(os.getcwd()+"/vendor")
+sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/vendor")
 from i2clibraries import i2c_lcd
 import quick2wire
 import datetime
@@ -17,7 +17,15 @@ import logging
 import traceback
 import inspect
 import requests
+import configparser
 #import grequests
+
+# 定数
+configfile = '/home/pi/SCRIPT/clock_note.ini'
+
+# 設定の取得
+ini = configparser.SafeConfigParser()
+ini.read(configfile)
 
 logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename='/home/pi/LOG/clock_note.engine.log',level=logging.DEBUG)
 
@@ -76,7 +84,8 @@ def show_ip(sec):
 	time.sleep(sec)
 
 def show_temp(sec):
-	p = subprocess.Popen("tail -n 1 /boot/DATA/log/temp.csv",
+#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/temp.csv",
+	p = subprocess.Popen("tail -n 1 "+ini.get("data", "temp_path")+"/temp.csv",
 												stdout=subprocess.PIPE,
 												shell=True)
 #	result = p.stdout.readline().strip().decode('utf-8').split(',')
@@ -88,7 +97,8 @@ def show_temp(sec):
 	time.sleep(sec)
 
 def show_humidity(sec):
-	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humidity.csv",
+#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humidity.csv",
+	p = subprocess.Popen("tail -n 1 "+ini.get("data", "humidity_path")+"/humidity.csv",
 												stdout=subprocess.PIPE,
 												shell=True)
 	result = p.stdout.readline().strip().decode('utf-8').split(',')
@@ -99,7 +109,8 @@ def show_humidity(sec):
 	time.sleep(sec)
 
 def show_humiditydeficit(sec):
-	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humiditydeficit.csv",
+#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humiditydeficit.csv",
+	p = subprocess.Popen("tail -n 1 "+ini.get("data", "humiditydeficit_path")+"/humiditydeficit.csv",
 												stdout=subprocess.PIPE,
 												shell=True)
 	result = p.stdout.readline().strip().decode('utf-8').split(',')
@@ -110,7 +121,8 @@ def show_humiditydeficit(sec):
 	time.sleep(sec)
 
 def show_CO2(sec):
-	p = subprocess.Popen("tail -n 1 /boot/DATA/log/co2.csv",
+#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/co2.csv",
+	p = subprocess.Popen("tail -n 1 "+ini.get("data", "CO2_path")+"/CO2.csv",
 												stdout=subprocess.PIPE,
 												shell=True)
 	result = p.stdout.readline().strip().decode('utf-8').split(',')
@@ -120,7 +132,8 @@ def show_CO2(sec):
 	say("二酸化炭素濃度"+result[1]+"ppmです")
 	time.sleep(sec)
 
-lcd = i2c_lcd.i2c_lcd(0x27,0, 2, 1, 0, 4, 5, 6, 7, 3)
+#lcd = i2c_lcd.i2c_lcd(0x27,0, 2, 1, 0, 4, 5, 6, 7, 3)
+lcd = i2c_lcd.i2c_lcd(int(ini.get("lcd", "i2c_addr"),0),0, 2, 1, 0, 4, 5, 6, 7, 3)
 lcd.backLightOn()
 now_str_prev = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
 is_said = False

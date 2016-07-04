@@ -55,75 +55,78 @@ def dec_network_ioerror():
     if g_count_of_network_ioerrors > 0:
         g_count_of_network_ioerrors -= 1
 
-try:
-  ############################################################
-  # sensors
-  #
-  msg_log("read.py started.")
+def read():
+  try:
+    ############################################################
+    # sensors
+    #
+    msg_log("read.py started.")
 
-  for sensor_name, sensor_settings in config["sensors"].items():
-    msg_log(sensor_name)
+    for sensor_name, sensor_settings in config["sensors"].items():
+      msg_log(sensor_name)
 # road reader.
-    reader = importlib.import_module(sensor_name)
-    value = reader.read()
+      reader = importlib.import_module(sensor_name)
+      value = reader.read()
 
-    datas = sensor_settings['data']
-    for data in datas:
-      msg_log(data[2])
-      if data[2]: # Send
+      datas = sensor_settings['data']
+      for data in datas:
+        msg_log(data[2])
+        if data[2]: # Send
       # read specified sender.
-        sender = importlib.import_module(data[2])
-        sender.send(serialid, data[0], value[data[0]]) # serialid, name, value
-      msg_log(data[3])
-      if data[3]: # Save
+          sender = importlib.import_module(data[2])
+          sender.send(serialid, data[0], value[data[0]]) # serialid, name, value
+        msg_log(data[3])
+        if data[3]: # Save
       # read specified saver.
-        saver = importlib.import_module(data[3])
-        saver.save(serialid, data[0], value[data[0]]) # serialid, name, value
+          saver = importlib.import_module(data[3])
+          saver.save(serialid, data[0], value[data[0]]) # serialid, name, value
 
-  ############################################################
-  # image
-  #
-  for imagedevice_name, data in config["imaging"].items():
-    imagedevice_settings = data["data"]
-    msg_log( imagedevice_name)
-    if imagedevice_name == 'uvc': # USB カメラなら
-      devices = []
-      d = datetime.datetime.today()
-      now = d.strftime("%Y%m%d%H%M%S")
-      if imagedevice_settings[1] == "one":
-        devices = ["video0"]
-      elif imagedevice_settings[1] == "all":
-        # UVC カメラデバイスの数だけ
-        devices = videodevices.videodevices_basename()
-      for videodevice in devices:
-        videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
-        filepath = '/tmp/'+now+'.jpg'
-        msg_log( filepath)
+    ############################################################
+    # image
+    #
+    for imagedevice_name, data in config["imaging"].items():
+      imagedevice_settings = data["data"]
+      msg_log( imagedevice_name)
+      if imagedevice_name == 'uvc': # USB カメラなら
+        devices = []
+        d = datetime.datetime.today()
+        now = d.strftime("%Y%m%d%H%M%S")
+        if imagedevice_settings[1] == "one":
+          devices = ["video0"]
+        elif imagedevice_settings[1] == "all":
+          # UVC カメラデバイスの数だけ
+          devices = videodevices.videodevices_basename()
+        for videodevice in devices:
+          videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
+          filepath = '/tmp/'+now+'.jpg'
+          msg_log( filepath)
 #      command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 640x480'
-        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
-        msg_log( command_str)
-        p = subprocess.check_call(command_str, shell=True)
-        if imagedevice_settings[2]: # Send
+          command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
+          msg_log( command_str)
+          p = subprocess.check_call(command_str, shell=True)
+          if imagedevice_settings[2]: # Send
         # read specified sender.
-          msg_log(imagedevice_settings[2])
-          sender = importlib.import_module(imagedevice_settings[2])
-          sender.send(serialid, filepath, videodevice) # serialid, name, value
-        if imagedevice_settings[3]: # Save
+            msg_log(imagedevice_settings[2])
+            sender = importlib.import_module(imagedevice_settings[2])
+            sender.send(serialid, filepath, videodevice) # serialid, name, value
+          if imagedevice_settings[3]: # Save
         # read specified saver.
-          msg_log(imagedevice_settings[3])
-          saver = importlib.import_module(imagedevice_settings[3])
-          saver.save(serialid, videodevice, filepath) # serialid, device, picfilepath
+            msg_log(imagedevice_settings[3])
+            saver = importlib.import_module(imagedevice_settings[3])
+            saver.save(serialid, videodevice, filepath) # serialid, device, picfilepath
 
-  msg_log("read.py ended.")
-except IOError:
-  info=sys.exc_info()
-  msg_err_log ("IOError:"+ traceback.format_exc(info[0]))
-  msg_err_log (traceback.format_exc(info[1]))
-  msg_err_log (traceback.format_exc(info[2]))
-  inc_file_ioerror()
-except:
-  info=sys.exc_info()
-  msg_err_log ("Unexpected error:"+ traceback.format_exc(info[0]))
-  msg_err_log (traceback.format_exc(info[1]))
-  msg_err_log (traceback.format_exc(info[2]))
+    msg_log("read.py ended.")
+  except IOError:
+    info=sys.exc_info()
+    msg_err_log ("IOError:"+ traceback.format_exc(info[0]))
+    msg_err_log (traceback.format_exc(info[1]))
+    msg_err_log (traceback.format_exc(info[2]))
+    inc_file_ioerror()
+  except:
+    info=sys.exc_info()
+    msg_err_log ("Unexpected error:"+ traceback.format_exc(info[0]))
+    msg_err_log (traceback.format_exc(info[1]))
+    msg_err_log (traceback.format_exc(info[2]))
 
+if __name__ == '__main__':
+  read()
