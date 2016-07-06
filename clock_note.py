@@ -21,7 +21,7 @@ import configparser
 #import grequests
 
 # 定数
-configfile = '/home/pi/SCRIPT/clock_note.ini'
+configfile = os.path.dirname(os.path.abspath(__file__))+'/clock_note.ini'
 
 # 設定の取得
 ini = configparser.SafeConfigParser()
