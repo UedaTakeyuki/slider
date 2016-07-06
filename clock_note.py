@@ -28,6 +28,7 @@ ini = configparser.SafeConfigParser()
 ini.read(configfile)
 
 logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename='/home/pi/LOG/clock_note.engine.log',level=logging.DEBUG)
+lcd = i2c_lcd.i2c_lcd(int(ini.get("lcd", "i2c_addr"),0),0, 2, 1, 0, 4, 5, 6, 7, 3)
 
 def msg_log(msg_str):
 	print (str(inspect.currentframe().f_lineno) + " " + msg_str)
@@ -84,6 +85,7 @@ def show_ip(sec):
 	time.sleep(sec)
 
 def show_temp(sec):
+	global lcd
 #	p = subprocess.Popen("tail -n 1 /boot/DATA/log/temp.csv",
 	p = subprocess.Popen("tail -n 1 "+ini.get("data", "temp_path")+"/temp.csv",
 												stdout=subprocess.PIPE,
@@ -97,6 +99,7 @@ def show_temp(sec):
 	time.sleep(sec)
 
 def show_humidity(sec):
+	global lcd
 #	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humidity.csv",
 	p = subprocess.Popen("tail -n 1 "+ini.get("data", "humidity_path")+"/humidity.csv",
 												stdout=subprocess.PIPE,
@@ -109,6 +112,7 @@ def show_humidity(sec):
 	time.sleep(sec)
 
 def show_humiditydeficit(sec):
+	global lcd
 #	p = subprocess.Popen("tail -n 1 /boot/DATA/log/humiditydeficit.csv",
 	p = subprocess.Popen("tail -n 1 "+ini.get("data", "humiditydeficit_path")+"/humiditydeficit.csv",
 												stdout=subprocess.PIPE,
@@ -121,6 +125,7 @@ def show_humiditydeficit(sec):
 	time.sleep(sec)
 
 def show_CO2(sec):
+	global lcd
 #	p = subprocess.Popen("tail -n 1 /boot/DATA/log/co2.csv",
 	p = subprocess.Popen("tail -n 1 "+ini.get("data", "CO2_path")+"/CO2.csv",
 												stdout=subprocess.PIPE,
@@ -132,31 +137,45 @@ def show_CO2(sec):
 	say("二酸化炭素濃度"+result[1]+"ppmです")
 	time.sleep(sec)
 
-#lcd = i2c_lcd.i2c_lcd(0x27,0, 2, 1, 0, 4, 5, 6, 7, 3)
-lcd = i2c_lcd.i2c_lcd(int(ini.get("lcd", "i2c_addr"),0),0, 2, 1, 0, 4, 5, 6, 7, 3)
-lcd.backLightOn()
-now_str_prev = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
-is_said = False
-while True:
-	now = datetime.datetime.now()
-	now_str = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
-	if (now.second == 1):
-#		pass
-		if not is_said:
-			say(str(now.hour) + "時" + str(now.minute) + "分です")
-			is_said = True
-	if (now.second == 2):
-		is_said = False
-		
-	if (datetime.datetime.now().second == 31):
-		show_ip(2)
-		show_temp(2)
-		show_humidity(2)
-		show_humiditydeficit(2)
-		show_CO2(2)
+def fork():
+	pid = os.fork()
+	if pid > 0:
+		f = open('/var/run/clock_note.pid','w')
+		f.write(str(pid)+"\n")
+		f.close()
+		sys.exit()
 
-	if not now_str == now_str_prev:
-		lcd.home()
-		lcd.writeString(now_str)
-		now_str_prev = now_str
-		time.sleep(0.1)
+	if pid == 0:
+		main()
+
+def main():
+	global lcd
+	lcd.backLightOn()
+	now_str_prev = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
+	is_said = False
+	while True:
+		now = datetime.datetime.now()
+		now_str = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
+		if (now.second == 1):
+#			pass
+			if not is_said:
+				say(str(now.hour) + "時" + str(now.minute) + "分です")
+				is_said = True
+		if (now.second == 2):
+			is_said = False
+		
+		if (datetime.datetime.now().second == 31):
+			show_ip(2)
+			show_temp(2)
+			show_humidity(2)
+			show_humiditydeficit(2)
+			show_CO2(2)
+
+		if not now_str == now_str_prev:
+			lcd.home()
+			lcd.writeString(now_str)
+			now_str_prev = now_str
+			time.sleep(0.1)
+
+if __name__ == '__main__':
+	fork()
