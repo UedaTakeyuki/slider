@@ -1,11 +1,11 @@
-![Slider](https://github.com/UedaTakeyuki/slider/blob/master/doc/slider.png)
-# Monitor
+![Slider](https://github.com/UedaTakeyuki/slider/blob/master/doc/sliders.png)
+# Slider
 
 ##Vision
-A simple data monitor with following abilitys:
-- gather numerical data or picture from small terminal (called "Slider").
-- show latest data to mobile web.
-- provide download feature.
+A simple data collector with following abilitys:
+- gather numerical data or picture with sensors.
+- save these on the SD Card.
+- push these on the Server (called "Monitor").
 
 ## Architecture
 Breaf architecture design of the MONITOR and SLIDERs.
