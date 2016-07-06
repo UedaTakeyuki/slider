@@ -2,14 +2,14 @@
 #
 import os
 import sys
-import inspect
-import traceback
+#import inspect
+#import traceback
 import subprocess
 import datetime
 import importlib
-import logging
+#import logging
 import videodevices
-import slider_utils
+import slider_utils as slider
 import getserialnumber as gs
 import pytoml as toml
 with open(os.path.dirname(os.path.abspath(__file__))+'/config.toml', 'rb') as fin:
@@ -23,10 +23,10 @@ def read():
     ############################################################
     # sensors
     #
-    msg_log("read.py started.")
+    slider.msg_log("read.py started.")
 
     for sensor_name, sensor_settings in config["sensors"].items():
-      msg_log(sensor_name)
+      slider.msg_log(sensor_name)
 
       # road reader.
       reader = importlib.import_module(sensor_name)
@@ -34,12 +34,12 @@ def read():
 
       datas = sensor_settings['data']
       for data in datas:
-        msg_log(data[2])
+        slider.msg_log(data[2])
         if data[2]: # Send
           # read specified sender.
           sender = importlib.import_module(data[2])
           sender.send(serialid, data[0], value[data[0]]) # serialid, name, value
-        msg_log(data[3])
+        slider.msg_log(data[3])
         if data[3]: # Save
           # read specified saver.
           saver = importlib.import_module(data[3])
@@ -50,7 +50,7 @@ def read():
     #
     for imagedevice_name, data in config["imaging"].items():
       imagedevice_settings = data["data"]
-      msg_log( imagedevice_name)
+      slider.msg_log( imagedevice_name)
       if imagedevice_name == 'uvc': # USB カメラなら
         devices = []
         d = datetime.datetime.today()
@@ -63,26 +63,26 @@ def read():
         for videodevice in devices:
           videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
           filepath = '/tmp/'+now+'.jpg'
-          msg_log( filepath)
+          slider.msg_log( filepath)
           command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
-          msg_log( command_str)
+          slider.msg_log( command_str)
           p = subprocess.check_call(command_str, shell=True)
           if imagedevice_settings[2]: # Send
             # read specified sender.
-            msg_log(imagedevice_settings[2])
+            slider.msg_log(imagedevice_settings[2])
             sender = importlib.import_module(imagedevice_settings[2])
             sender.send(serialid, filepath, videodevice) # serialid, name, value
           if imagedevice_settings[3]: # Save
             # read specified saver.
-            msg_log(imagedevice_settings[3])
+            slider.msg_log(imagedevice_settings[3])
             saver = importlib.import_module(imagedevice_settings[3])
             saver.save(serialid, videodevice, filepath) # serialid, device, picfilepath
 
-    msg_log("read.py ended.")
+    slider.msg_log("read.py ended.")
   except IOError:
-    io_error_report()
+    slider.io_error_report()
   except:
-    unknown_error_report()
+    slider.unknown_error_report()
 
 if __name__ == '__main__':
   read()

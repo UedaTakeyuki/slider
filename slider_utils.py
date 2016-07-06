@@ -1,6 +1,9 @@
 # coding:utf-8 Copy Right Atelier Grenouille © 2015 -
 #
 import sys
+import logging
+import inspect
+import traceback
 
 logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename='/home/pi/LOG/slider.log',level=logging.DEBUG)
 
