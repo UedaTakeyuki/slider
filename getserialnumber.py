@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 import commands
 
-script='/home/pi/SCRIPT/getserialnumber.sh'
+script=os.path.dirname(os.path.abspath(__file__))+'/getserialnumber.sh'
 
 def get_serialnumber():
     serial_id = commands.getstatusoutput(script)

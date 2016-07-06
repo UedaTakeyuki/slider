@@ -23,7 +23,7 @@ import ConfigParser
 import inspect
 
 # 定数
-configfile = '/home/pi/SCRIPT/gen_pic_saver.ini'
+configfile = os.path.dirname(os.path.abspath(__file__))+'/gen_pic_saver.ini'
 reboot = 'sudo reboot'
 network_restart = 'sudo service networking restart'
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 import commands
 
-script='/home/pi/SCRIPT/getversion.sh'
+script=os.path.dirname(os.path.abspath(__file__))+'/getversion.sh'
 
 def get_version():
     version = commands.getstatusoutput(script)

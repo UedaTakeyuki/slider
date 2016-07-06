@@ -1,4 +1,5 @@
 # coding:utf-8 Copy Right Atelier Grenouille © 2015 -
+import os
 import getserialnumber as gs
 
 import ConfigParser
@@ -8,7 +9,7 @@ import requests
 import datetime 
 
 # 定数
-configfile = '/home/pi/SCRIPT/config.ini'
+configfile = os.path.dirname(os.path.abspath(__file__))+'/config.ini'
 logfilename = '/home/pi/LOG/helth.log'
 vmstd='vmstat | tail -n 1'
 
@@ -34,4 +35,4 @@ logging.info(vmstat_result)
 
 # chlog への post
 payload = {'serial_id': serialid, 'filename': 'chlog.txt', 'textstr': now_string+", "+vmstat_result}
-r = requests.post(url_data, data=payload, timeout=10)
+r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)

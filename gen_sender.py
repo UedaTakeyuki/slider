@@ -2,6 +2,7 @@
 #
 # require: 'usbrh' 
 # http://www.infiniteloop.co.jp/blog/2013/02/raspberrypitem/
+import os
 import sys
 import datetime 
 import locale 
@@ -24,7 +25,7 @@ import ConfigParser
 import inspect
 
 # 定数
-configfile = '/home/pi/SCRIPT/gen_sender.ini'
+configfile = os.path.dirname(os.path.abspath(__file__))+'/gen_sender.ini'
 reboot = 'sudo reboot'
 network_restart = 'sudo service networking restart'
 
@@ -78,7 +79,7 @@ def send_data(payload):
     global ini
     if ini.get("send", "potocol") == "http":
 #        r = requests.post(ini.get("server", "url_base") + 'postdata.php', data=payload, timeout=10, verify=False)
-        r = requests.post(ini.get("server", "url_base") + 'postdata.php', data=payload, timeout=10, cert='/home/pi/SCRIPT/slider.pem', verify=False)
+        r = requests.post(ini.get("server", "url_base") + 'postdata.php', data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
         msg_log("by http.")
     elif ini.get("send", "potocol") == "mqtt":
         mqttclient.publish(ini.get("mqtt", "topic"), json.JSONEncoder().encode(payload))
