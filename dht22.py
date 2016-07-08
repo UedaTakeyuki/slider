@@ -8,10 +8,13 @@
 import os
 import sys
 #import commands
-import subprocess
+#import subprocess
+import subprocess32 as subprocess
 import re
+import slider_utils as slider
 
 def dht22(gpio):
+  try:
     #p = subprocess.Popen(["/home/pi/SCRIPT/vendor/lol_dht22/loldht", "29",  "|grep", "Hum"], 
     #                     stdin=subprocess.PIPE,
     #                     stdout=subprocess.PIPE,
@@ -23,11 +26,18 @@ def dht22(gpio):
     #return result
 
 #    result = commands.getoutput("/home/pi/install/lol_dht22/loldht " + str(29) + " |grep Hum")
-    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, shell=True)
-    result = p.stdout.readline().strip()
+#    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    std_out, std_err = p.communicate(None, timeout=10)
+    #result = p.stdout.readline().strip()
+    result = std_out.strip()
     match = re.match(r'Humidity = (.*) % Temperature = (.*) \*C',result)
     result = {"temp":float(match.group(2)), "humidity":float(match.group(1))}
     return result
+  except IOError:
+    slider.io_error_report()
+  except:
+    slider.unknown_error_report()
 
 # http://d.hatena.ne.jp/Rion778/20121203/1354546179
 def HumidityDeficit(t,rh): # t: 温度, rh: 相対湿度
@@ -52,8 +62,9 @@ def tetens(t):
 
 def read():
   result = dht22(29)
-  result["humiditydeficit"] = ('%.1f' % HumidityDeficit(result["temp"],result["humidity"]))
-  return result
+  if result is not None:
+    result["humiditydeficit"] = ('%.1f' % HumidityDeficit(result["temp"],result["humidity"]))
+    return result
 
 if __name__ == '__main__':
     print dht22(29)

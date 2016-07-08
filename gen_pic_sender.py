@@ -24,6 +24,8 @@ import getversion      as gv
 import ConfigParser
 import inspect
 
+import slider_utils as slider
+
 # 定数
 configfile = os.path.dirname(os.path.abspath(__file__))+'/gen_pic_sender.ini'
 reboot = 'sudo reboot'
@@ -44,46 +46,46 @@ url_data = server_url_base + 'postdata.php'
 # ログファイルの設定
 #logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename=ini.get("log", "log_file"),level=logging.DEBUG)
 
-def msg_log(msg_str):
-    print str(inspect.currentframe(1).f_lineno) + " " + msg_str
-    logging.info(str(inspect.currentframe(1).f_lineno) + " " + msg_str)
+#def msg_log(msg_str):
+#    print str(inspect.currentframe(1).f_lineno) + " " + msg_str
+#    logging.info(str(inspect.currentframe(1).f_lineno) + " " + msg_str)
 
-def msg_err_log(msg_str):
-    print str(inspect.currentframe(1).f_lineno) + " " + msg_str
-    logging.error(str(inspect.currentframe(1).f_lineno) + " " + msg_str)
+#def msg_err_log(msg_str):
+#    print str(inspect.currentframe(1).f_lineno) + " " + msg_str
+#    logging.error(str(inspect.currentframe(1).f_lineno) + " " + msg_str)
 
-def inc_file_ioerror():
-    global g_count_of_file_ioerrors
-    g_count_of_file_ioerrors += 1
-    if g_count_of_file_ioerrors == 3:
-        subprocess.Popen(reboot, shell=True)
+#def inc_file_ioerror():
+#    global g_count_of_file_ioerrors
+#    g_count_of_file_ioerrors += 1
+#    if g_count_of_file_ioerrors == 3:
+#        subprocess.Popen(reboot, shell=True)
 
-def dec_file_ioerror():
-    global g_count_of_file_ioerrors
-    if g_count_of_file_ioerrors > 0:
-        g_count_of_file_ioerrors -= 1
+#def dec_file_ioerror():
+#    global g_count_of_file_ioerrors
+#    if g_count_of_file_ioerrors > 0:
+#        g_count_of_file_ioerrors -= 1
 
-def inc_network_ioerror():
-    global g_count_of_network_ioerrors
-    g_count_of_network_ioerrors += 1
-    if g_count_of_network_ioerrors == 3:
-        g_count_of_network_ioerrors = 0
-        subprocess.Popen(network_restart, shell=True)
+#def inc_network_ioerror():
+#    global g_count_of_network_ioerrors
+#    g_count_of_network_ioerrors += 1
+#    if g_count_of_network_ioerrors == 3:
+#        g_count_of_network_ioerrors = 0
+#        subprocess.Popen(network_restart, shell=True)
 
-def dec_network_ioerror():
-    global g_count_of_network_ioerrors
-    if g_count_of_network_ioerrors > 0:
-        g_count_of_network_ioerrors -= 1
+#def dec_network_ioerror():
+#    global g_count_of_network_ioerrors
+#    if g_count_of_network_ioerrors > 0:
+#        g_count_of_network_ioerrors -= 1
 
 def send_data(payload, files):
     global ini
     if ini.get("send", "potocol") == "http":
 #        r = requests.post(ini.get("server", "url_base") + 'postpic.php', data=payload, files=files, timeout=10, verify=False)
         r = requests.post(ini.get("server", "url_base") + 'postpic.php', data=payload, files=files, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
-        msg_log("by http.")
+        slider.msg_log("by http.")
     elif ini.get("send", "potocol") == "mqtt":
         mqttclient.publish(ini.get("mqtt", "topic"), json.JSONEncoder().encode(payload))
-        msg_log("by mqtt.")
+        slider.msg_log("by mqtt.")
 
 #serialid = gs.get_serialnumber()
 #msg_log("serialid=" + serialid)
@@ -94,15 +96,16 @@ def send_data(payload, files):
 if ini.get("send", "potocol") == "mqtt":
     mqtt_id = ini.get("mqtt", "id_base")+serialid
     mqttclient = mqtt.Client(client_id=mqtt_id, clean_session=True, protocol=mqtt.MQTTv311)
-    msg_log("id = " + mqtt_id)
+    slider.msg_log("id = " + mqtt_id)
     #client.username_pw_set(USERNAME, PASSWORD)
     mqtt_host = ini.get("mqtt", "host")
     mqttclient.connect(mqtt_host)
-    msg_log("host = " + mqtt_host)
+    slider.msg_log("host = " + mqtt_host)
 
 
 def send(serialid, filepath, device):
-    print "start sending..."
+  try:  
+    slider.msg_log ( "start sending...")
     now = datetime.datetime.now() # 時刻の取得
     now_string = now.strftime("%Y/%m/%d %H:%M:%S")
     files = {'upfile': open(filepath, 'rb')}
@@ -111,5 +114,8 @@ def send(serialid, filepath, device):
 #    comand_str = 'curl --insecure -k -F "upfile=@' + filepath + '" -F "serial_id='+serialid+ '" -F "device='+device+'" '+requests.post(ini.get("server", "url_base")) + 'postpic.php'+ '--retry 30'
 #    print command_str
 #    p = subprocess.check_call(command_str, shell=True)
-    print "end sending..."
-
+    slider.msg_log ( "end sending...")
+  except IOError:
+    slider.io_error_report()
+  except:
+    slider.unknown_error_report()

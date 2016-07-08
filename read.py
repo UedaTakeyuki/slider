@@ -32,18 +32,20 @@ def read():
       reader = importlib.import_module(sensor_name)
       value = reader.read()
 
-      datas = sensor_settings['data']
-      for data in datas:
-        slider.msg_log(data[2])
-        if data[2]: # Send
-          # read specified sender.
-          sender = importlib.import_module(data[2])
-          sender.send(serialid, data[0], value[data[0]]) # serialid, name, value
-        slider.msg_log(data[3])
-        if data[3]: # Save
-          # read specified saver.
-          saver = importlib.import_module(data[3])
-          saver.save(serialid, data[0], value[data[0]]) # serialid, name, value
+      if (value is not None):
+
+        datas = sensor_settings['data']
+        for data in datas:
+          slider.msg_log(data[2])
+          if data[2]: # Send
+            # read specified sender.
+            sender = importlib.import_module(data[2])
+            sender.send(serialid, data[0], value[data[0]]) # serialid, name, value
+          slider.msg_log(data[3])
+          if data[3]: # Save
+            # read specified saver.
+            saver = importlib.import_module(data[3])
+            saver.save(serialid, data[0], value[data[0]]) # serialid, name, value
 
     ############################################################
     # image
