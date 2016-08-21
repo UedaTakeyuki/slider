@@ -1,4 +1,5 @@
 # coding:utf-8 Copy Right Atelier Grenouille © 2015 -
+import os
 import requests
 import json
 import subprocess
@@ -7,12 +8,13 @@ import sys
 import ConfigParser
 
 import getserialnumber as gs
+import slider_utils as slider
 
 #定数および設定値
 reboot = "sudo reboot"
-logfile = "/home/pi/LOG/fota.log"
-configfile = '/home/pi/SCRIPT/config.ini'
-logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename=logfile,level=logging.DEBUG)
+#logfile = "/home/pi/LOG/fota.log"
+configfile = '/home/pi/SCRIPT/slider/config.ini'
+#logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename=logfile,level=logging.DEBUG)
 
 # 設定の取得
 ini = ConfigParser.SafeConfigParser()
@@ -27,20 +29,18 @@ serialid = gs.get_serialnumber()
 try:
   payload = {'serial_id': serialid}
 #  payload = {'serial_id': '00000000790f4c7c'}
-  r=requests.get(fota_url, params=payload, timeout=10)
+  r=requests.get(fota_url, params=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
 #	r=requests.get("http://klingsor.uedasoft.com/tools/151024/fota.php", params=payload, timeout=10)
   resp=json.loads(r.text)
   if resp['restart'] == "1":
-    logging.info("reboot.")
+    slider.msg_log("reboot.")
     subprocess.Popen(reboot, shell=True)
+  elif resp['command']:
+    slider.msg_log("command = "+resp['command'])
+    subprocess.Popen(resp['command'], shell=True)
+
 
 except IOError:
-  info=sys.exc_info()
-  msg_err_log ("IOError:"+ traceback.format_exc(info[0]))
-  msg_err_log (traceback.format_exc(info[1]))
-  msg_err_log (traceback.format_exc(info[2]))
+  slider.io_error_report()
 except:
-  info=sys.exc_info()
-  msg_err_log ("Unexpected error:"+ traceback.format_exc(info[0]))
-  msg_err_log (traceback.format_exc(info[1]))
-  msg_err_log (traceback.format_exc(info[2]))
+  slider.unknown_error_report()
