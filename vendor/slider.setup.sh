@@ -16,8 +16,15 @@ sudo pip install paho-mqtt
 #serial
 sudo pip install pyserial
 
-#rewuests
+#subprosess32
+sudo pip install subprocess32
+
+#requests
 sudo pip install requests
+
+#fswebcam
+sudo apt-get install fswebcam
+
 #
 # WiringPi-Python
 #
@@ -31,4 +38,3 @@ cd ..
 swig2.0 -python wiringpi.i
 sudo python setup.py install
 sudo python3 setup.py install
-
