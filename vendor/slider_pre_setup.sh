@@ -61,3 +61,7 @@ ExecStart=/usr/share/usbmount/usbmount add
 RemainAfterExit=yes
 EOS2
 
+# Redis
+sudo apt-get install redis-server
+sudo pip install redis
+
