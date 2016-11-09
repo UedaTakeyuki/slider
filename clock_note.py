@@ -26,9 +26,13 @@ configfile = os.path.dirname(os.path.abspath(__file__))+'/clock_note.ini'
 # 設定の取得
 ini = configparser.SafeConfigParser()
 ini.read(configfile)
+p = subprocess.Popen( os.path.dirname(os.path.abspath(__file__))+"/geti2caddress.sh ", stdout=subprocess.PIPE, shell=True)
+i2c_addr = p.stdout.readline().strip().decode('utf-8')
+#print (i2c_addr)
 
 logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename='/home/pi/LOG/clock_note.engine.log',level=logging.DEBUG)
-lcd = i2c_lcd.i2c_lcd(int(ini.get("lcd", "i2c_addr"),0),0, 2, 1, 0, 4, 5, 6, 7, 3)
+#lcd = i2c_lcd.i2c_lcd(int(ini.get("lcd", "i2c_addr"),0),0, 2, 1, 0, 4, 5, 6, 7, 3)
+lcd = i2c_lcd.i2c_lcd(int("0x" + i2c_addr,0),0, 2, 1, 0, 4, 5, 6, 7, 3)
 
 def msg_log(msg_str):
 	print (str(inspect.currentframe().f_lineno) + " " + msg_str)
@@ -126,16 +130,20 @@ def show_humiditydeficit(sec):
 
 def show_CO2(sec):
 	global lcd
-#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/co2.csv",
-	p = subprocess.Popen("tail -n 1 "+ini.get("data", "CO2_path")+"/CO2.csv",
-												stdout=subprocess.PIPE,
-												shell=True)
-	result = p.stdout.readline().strip().decode('utf-8').split(',')
-	lcd.home()
-	lcd.clear()
-	lcd.writeString("CO2 = " + result[1])
-	say("二酸化炭素濃度"+result[1]+"ppmです")
-	time.sleep(sec)
+	if ini.get("data", "CO2_path"): # settings is NOT null then
+	#	p = subprocess.Popen("tail -n 1 /boot/DATA/log/co2.csv",
+		p = subprocess.Popen("tail -n 1 "+ini.get("data", "CO2_path")+"/CO2.csv",
+													stdout=subprocess.PIPE,
+													shell=True)
+		result = p.stdout.readline().strip().decode('utf-8').split(',')
+		lcd.home()
+		lcd.clear()
+		lcd.writeString("CO2 = " + result[1])
+		say("二酸化炭素濃度"+result[1]+"ppmです")
+		time.sleep(sec)
+	else:
+		lcd.home()
+		lcd.clear()
 
 def fork():
 	pid = os.fork()
