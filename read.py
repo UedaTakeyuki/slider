@@ -70,8 +70,8 @@ def read():
     slider.msg_log( imagedevice_name)
     if imagedevice_name == 'uvc': # USB カメラなら
       devices = []
-      d = datetime.datetime.today()
-      now = d.strftime("%Y%m%d%H%M%S")
+#      d = datetime.datetime.today()
+#      now = d.strftime("%Y%m%d%H%M%S")
       if imagedevice_settings[1] == "one":
         devices = ["video0"]
       elif imagedevice_settings[1] == "all":
@@ -79,12 +79,15 @@ def read():
         devices = videodevices.videodevices_basename()
       for videodevice in devices:
         videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
-        filepath = '/tmp/'+now+'.jpg'
+#        filepath = '/tmp/'+now+'.jpg'
+        filepath = '/tmp/'+videodevice_now+'.jpg'
         slider.msg_log( filepath)
-        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
+#        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
+        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -D 1 -S 20 -r 320x240'
         slider.msg_log( command_str)
         try:
           p = subprocess.check_call(command_str, shell=True)
+          slider.msg_log ('p = ' + str(p))
         except IOError:
           slider.io_error_report()
           continue

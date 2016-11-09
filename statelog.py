@@ -36,3 +36,25 @@ logging.info(vmstat_result)
 # chlog への post
 payload = {'serial_id': serialid, 'filename': 'chlog.txt', 'textstr': now_string+", "+vmstat_result}
 r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+
+### ↓↓↓ 2016.10.31 追加 ↓↓↓
+# ls /dev/video* の取得
+lsvideos = 'ls /dev/video*'
+p = subprocess.Popen(lsvideos, stdout=subprocess.PIPE, shell=True)
+lsvideos_result = p.stdout.read()
+lsvideos_result = lsvideos_result.replace('/dev/video','')
+lsvideos_result = lsvideos_result.replace('\n',', ')
+#lsvideos_result = lsvideos_result.replace('\r','')
+
+#videoslog への post
+payload = {'serial_id': serialid, 'filename': 'videoslog.txt', 'textstr': now_string+", "+lsvideos_result}
+r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+
+# reboot if number of video devices is not much.
+import glob
+reboot = 'sudo reboot'
+#videodevices = os.listdir('/dev/video*')
+videodevices = glob.glob('/dev/video*')
+if len(videodevices) < 9:
+	p = subprocess.Popen(reboot, stdout=subprocess.PIPE, shell=True)
+
