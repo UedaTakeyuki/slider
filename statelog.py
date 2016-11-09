@@ -55,6 +55,6 @@ import glob
 reboot = 'sudo reboot'
 #videodevices = os.listdir('/dev/video*')
 videodevices = glob.glob('/dev/video*')
-if len(videodevices) < 9:
-	p = subprocess.Popen(reboot, stdout=subprocess.PIPE, shell=True)
+#if len(videodevices) < 9:
+#	p = subprocess.Popen(reboot, stdout=subprocess.PIPE, shell=True)
 
