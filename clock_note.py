@@ -183,7 +183,8 @@ def main():
 			lcd.home()
 			lcd.writeString(now_str)
 			now_str_prev = now_str
-			time.sleep(0.1)
+
+		time.sleep(0.1)
 
 if __name__ == '__main__':
 	fork()
