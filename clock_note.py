@@ -50,8 +50,10 @@ def say(phrase):
 #		command = '/usr/bin/curl -F "phrase='+phrase+'" localhost/say.php'
 #		command_str = command.encode('utf-8')
 #		print (command_str)
-		payload = {'phrase': phrase}
-		r = requests.post('http://localhost/say.php', data=payload, timeout=10, verify=False)
+		if ini.get("path", "say_path"): # settings is NOT null then
+			payload = {'phrase': phrase}
+			#r = requests.post('http://localhost/say.php', data=payload, timeout=10, verify=False)
+			r = requests.post(ini.get("path", "say_path"), data=payload, timeout=10, verify=False)
 #		urls = ['http://localhost/say.php']
 #		rs = (grequests.post('http://localhost/say.php', data=payload, timeout=10, verify=False) for u in urls)
 #		grequests.map(rs)
