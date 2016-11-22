@@ -22,7 +22,7 @@ cd ..
 
 # gdata-python-client
 git clone https://github.com/google/gdata-python-client.git
-cd gdata-python-clien
+cd gdata-python-client
 sudo python setup.py install
 cd ..
 
