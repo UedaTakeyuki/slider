@@ -4,12 +4,13 @@
 
 #import getpirevision
 import re
+import sys
 
-#
+
+usage = 'Usage: python {} [--s]'.format(__file__)
+
 # model definition table from revision info.
-#
 # refer http://elinux.org/RPi_HardwareHistory
-
 model_a          = ["0007","0008","0009",]
 model_b          = ["0002","0004","0005","0006",]
 model_b_beta     = ["Beta",]
@@ -31,7 +32,7 @@ def revision():
         revision = m.group(1)
         return revision
 
-def model():
+def model_strict():
 #  rev = getpirevision.revision()
   rev = revision()
   if rev in model_a:
@@ -59,6 +60,35 @@ def model():
   else:
     return None
 
+def model():
+#  rev = getpirevision.revision()
+  rev = revision()
+  if rev in model_a:
+    return "A"
+  elif rev in model_b + model_b_beta + model_b_ECN0001:
+    return "B"
+  elif rev in model_cm:
+    return "Compute Module"
+  elif rev in model_a_plus:
+    return "A+"
+  elif rev in model_b_plus:
+    return "B+"
+  elif rev in model_2b + model_2b_2837:
+    return "2 Model B"
+  elif rev in model_3b:
+    return "3 Model B"
+  elif rev in model_zero:
+    return "Zero"
+  else:
+    return None
 
 if __name__ == '__main__':
-  print (model())
+  if len(sys.argv) == 1:
+    print (model())
+  elif len(sys.argv) == 2:
+    if sys.argv[1] == '--s':
+      print (model_strict())
+    else:
+      print usage
+  else:
+    print usage
