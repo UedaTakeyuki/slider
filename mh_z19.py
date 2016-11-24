@@ -1,21 +1,33 @@
-# http://eleparts.co.kr/data/design/product_file/SENSOR/gas/MH-Z19_CO2%20Manual%20V2.pdf
+# -*- coding: utf-8 -*-
+# refer http://eleparts.co.kr/data/design/product_file/SENSOR/gas/MH-Z19_CO2%20Manual%20V2.pdf
+# 
+# © Takeyuki UEDA 2015 - 
+
 import serial
 import time
 import subprocess
 import slider_utils as slider
+import getpimodel
 
-stop_getty = 'sudo systemctl stop serial-getty@ttyAMA0.service'
-start_getty = 'sudo systemctl start serial-getty@ttyAMA0.service'
+# setting
 
+if getpimodel.model() == "3 Model B":
+  serial_dev = '/dev/ttyS0'
+  stop_getty = 'sudo systemctl stop serial-getty@ttyS0.service'
+  start_getty = 'sudo systemctl start serial-getty@ttyS0.service'
+else:
+  serial_dev = '/dev/ttyAMA0'
+  stop_getty = 'sudo systemctl stop serial-getty@ttyAMA0.service'
+  start_getty = 'sudo systemctl start serial-getty@ttyAMA0.service'
 
 def mh_z19():
   try:
-    ser = serial.Serial('/dev/ttyAMA0',
-                      baudrate=9600,
-                      bytesize=serial.EIGHTBITS,
-                      parity=serial.PARITY_NONE,
-                      stopbits=serial.STOPBITS_ONE,
-                      timeout=1.0)
+    ser = serial.Serial(serial_dev,
+                        baudrate=9600,
+                        bytesize=serial.EIGHTBITS,
+                        parity=serial.PARITY_NONE,
+                        stopbits=serial.STOPBITS_ONE,
+                        timeout=1.0)
     while 1:
       result=ser.write("\xff\x01\x86\x00\x00\x00\x00\x00\x79")
       s=ser.read(9)
