@@ -7,11 +7,11 @@ import serial
 import time
 import subprocess
 import slider_utils as slider
-import getpimodel
+import getrpimodel
 
 # setting
 
-if getpimodel.model() == "3 Model B":
+if getrpimodel.model() == "3 Model B":
   serial_dev = '/dev/ttyS0'
   stop_getty = 'sudo systemctl stop serial-getty@ttyS0.service'
   start_getty = 'sudo systemctl start serial-getty@ttyS0.service'

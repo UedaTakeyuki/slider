@@ -6,6 +6,8 @@
 #python3
 sudo apt-get install python3 python3-setuptools python3-pip
 
+#getrpimodel written by UEDA
+sudo pip install getrpimodel
 
 #pytoml
 sudo pip install pytoml
