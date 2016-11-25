@@ -29,10 +29,20 @@ def dht22(gpio):
 #    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, shell=True)
     p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     std_out, std_err = p.communicate(None, timeout=10)
-    #result = p.stdout.readline().strip()
     result = std_out.strip()
+
+    # read result
     match = re.match(r'Humidity = (.*) % Temperature = (.*) \*C',result)
-    result = {"temp":float(match.group(2)), "humidity":float(match.group(1))}
+    temp = float(match.group(2))
+    humidity =float(match.group(1))
+
+    # drop bad value.
+    if temp < -1000  or temp > 1000:
+        temp = None
+    if humidity < -1000 or humidity > 1000:
+        humidity = None
+    result = {"temp":temp, "humidity":humidity}
+#    result = {"temp":float(match.group(2)), "humidity":float(match.group(1))}
     return result
   except IOError:
     slider.io_error_report()
