@@ -2,3 +2,4 @@
 *.pem
 vendor/*
 !vendor/*.sh
+!vendor/*.py
