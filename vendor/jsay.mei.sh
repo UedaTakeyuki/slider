@@ -10,7 +10,7 @@ TMP=/tmp/jsay.wav
 echo start
 echo "$1" | open_jtalk \
 -x /var/lib/mecab/dic/open-jtalk/naist-jdic \
--m /home/pi/SCRIPT/slider/vendor/mei_normal.htsvoice \
+-m /usr/share/hts-voice/MMDAgent_Example-1.6/Voice/mei/mei_normal.htsvoice \
 -a 0.5 \
 -ow $TMP && \
 aplay --quiet $TMP
