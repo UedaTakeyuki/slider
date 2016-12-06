@@ -176,7 +176,8 @@ def main():
 		
 		if (datetime.datetime.now().second == 31):
 			show_ip(2)
-			show_temp(2)
+#			show_temp(2)
+			show_temp(3) # openjtalk が間に合わない
 			show_humidity(2)
 			show_humiditydeficit(2)
 			show_CO2(2)
