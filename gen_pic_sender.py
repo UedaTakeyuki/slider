@@ -30,6 +30,7 @@ import slider_utils as slider
 configfile = os.path.dirname(os.path.abspath(__file__))+'/gen_pic_sender.ini'
 reboot = 'sudo reboot'
 network_restart = 'sudo service networking restart'
+public_serialid = '0000000000000000'
 
 # グローバル
 g_count_of_file_ioerrors=0   # File IOERROR の回数。３回連続する場合、再起動する
@@ -104,8 +105,12 @@ if ini.get("send", "potocol") == "mqtt":
 
 
 def send(serialid, filepath, device):
-  try:  
+  global ini, public_serialid
+  try:
     slider.msg_log ( "start sending...")
+    if ini.get("monitor", "mode") == "public":
+      # public mode, so use public_serialid
+      serialid = public_serialid
     now = datetime.datetime.now() # 時刻の取得
     now_string = now.strftime("%Y/%m/%d %H:%M:%S")
     files = {'upfile': open(filepath, 'rb')}
