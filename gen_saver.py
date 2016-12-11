@@ -72,10 +72,10 @@ def dec_network_ioerror():
 
 def send_data(payload):
     global ini
-    if ini.get("send", "potocol") == "http":
+    if ini.get("send", "protocol") == "http":
         r = requests.post(ini.get("server", "url_base") + 'postdata.php', data=payload, timeout=10, verify=False)
         msg_log("by http.")
-    elif ini.get("send", "potocol") == "mqtt":
+    elif ini.get("send", "protocol") == "mqtt":
         mqttclient.publish(ini.get("mqtt", "topic"), json.JSONEncoder().encode(payload))
         msg_log("by mqtt.")
 

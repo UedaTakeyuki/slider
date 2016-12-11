@@ -80,11 +80,11 @@ url_data = server_url_base + 'postdata.php'
 
 def send_data(payload, files):
     global ini
-    if ini.get("send", "potocol") == "http":
+    if ini.get("send", "protocol") == "http":
 #        r = requests.post(ini.get("server", "url_base") + 'postpic.php', data=payload, files=files, timeout=10, verify=False)
         r = requests.post(ini.get("server", "url_base") + 'postpic.php', data=payload, files=files, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
         slider.msg_log("by http.")
-    elif ini.get("send", "potocol") == "mqtt":
+    elif ini.get("send", "protocol") == "mqtt":
         mqttclient.publish(ini.get("mqtt", "topic"), json.JSONEncoder().encode(payload))
         slider.msg_log("by mqtt.")
 
@@ -94,7 +94,7 @@ def send_data(payload, files):
 #msg_log("version=" + version)
 
 # mqtt
-if ini.get("send", "potocol") == "mqtt":
+if ini.get("send", "protocol") == "mqtt":
     mqtt_id = ini.get("mqtt", "id_base")+serialid
     mqttclient = mqtt.Client(client_id=mqtt_id, clean_session=True, protocol=mqtt.MQTTv311)
     slider.msg_log("id = " + mqtt_id)
