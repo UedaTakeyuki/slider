@@ -13,6 +13,10 @@ import time
 import ConfigParser
 import requests
 import getserialnumber as gs
+import getrpimodel
+
+# RPi 3 は LED1(赤LED)を操作できない
+pi3 = True if getrpimodel.model() == "3 Model B" else False
 
 # 設定の取得
 ini = ConfigParser.SafeConfigParser()
@@ -29,14 +33,14 @@ GPIO.output(36, GPIO.HIGH)
 # 基盤LED の設定
 l = led.LED()
 l.use(0) # green
-l.use(1) # red
+pi3 or l.use(1) # red
 
 if GPIO.input(38):
   l.off(0)  # green off
-  l.on(1) # red on
+  pi3 or l.on(1) # red on
 else:
   l.on(0)  # green on
-  l.off(1) # red off
+  pi3 or l.off(1) # red off
 
 def wait():
   while True:
@@ -44,7 +48,7 @@ def wait():
       #GPIO.wait_for_edge(38, GPIO.RISING) # GPIO problem? mb both.
       if GPIO.input(38):
         l.off(0) # greenn off
-        l.on(1)  # red on
+        pi3 or l.on(1)  # red on
         payload = {'serial_id': gs.get_serialnumber(), 'name': "water", 'status': "on"}
         r = requests.post(ini.get("server", "url_base") + 'postalart.php', data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
         print "send alart on"
