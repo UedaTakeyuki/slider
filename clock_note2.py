@@ -81,7 +81,9 @@ def show_ip(sec):
 	p = subprocess.Popen("hostname -I",
 												stdout=subprocess.PIPE,
 												shell=True)
-	lcd.set("IP: 192.","168.255.255")
+	ip = p.stdout.readline().strip().decode('utf-8')
+	ips = ip.split(".")
+	lcd.set("IP: "+ips[0]+".",".".join(ips[1:4]))
 	lcd.scroll()
 #	lcd.home()
 #	lcd.clear()
@@ -193,9 +195,9 @@ def main():
 		
 		if (datetime.datetime.now().second == 31):
 			show_ip(2)
-			show_temp(2)
 #			show_temp(2)
 			show_temp(3) # openjtalk が間に合わない
+			show_humidity(2)
 			show_humiditydeficit(2)
 			show_CO2(2)
 
