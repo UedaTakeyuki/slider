@@ -9,40 +9,38 @@ import os
 import sys
 #import commands
 #import subprocess
+import ConfigParser
 import subprocess32 as subprocess
 import re
 import slider_utils as slider
 
+# 設定値の取得
+configfile = os.path.dirname(os.path.abspath(__file__))+'/'+os.path.splitext(os.path.basename(__file__))[0]+'.ini'
+#print configfile
+ini = ConfigParser.SafeConfigParser()
+ini.read(configfile)
+
 def dht22(gpio):
+  global ini
   try:
-    #p = subprocess.Popen(["/home/pi/SCRIPT/vendor/lol_dht22/loldht", "29",  "|grep", "Hum"], 
-    #                     stdin=subprocess.PIPE,
-    #                     stdout=subprocess.PIPE,
-    #                     stderr=subprocess.PIPE,
-    #                     shell=False)
-    #return p.stdout.readline()
-    #usbrh_result = p.stdout.readline().split()
-    #result = {"temp":float(usbrh_result[0]), "humidity":float(usbrh_result[1])}
-    #return result
+    if ini.get("mode", "run_mode") == "dummy":
+      result = {"temp":30.0, "humidity":30.0}
+    else:
+      p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+      std_out, std_err = p.communicate(None, timeout=10)
+      result = std_out.strip()
 
-#    result = commands.getoutput("/home/pi/install/lol_dht22/loldht " + str(29) + " |grep Hum")
-#    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, shell=True)
-    p = subprocess.Popen(os.path.abspath(os.path.dirname(__file__))+"/vendor/lol_dht22/loldht " + str(gpio) + " |grep Hum", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    std_out, std_err = p.communicate(None, timeout=10)
-    result = std_out.strip()
+      # read result
+      match = re.match(r'Humidity = (.*) % Temperature = (.*) \*C',result)
+      temp = float(match.group(2))
+      humidity =float(match.group(1))
 
-    # read result
-    match = re.match(r'Humidity = (.*) % Temperature = (.*) \*C',result)
-    temp = float(match.group(2))
-    humidity =float(match.group(1))
-
-    # drop bad value.
-    if temp < -1000  or temp > 1000:
+      # drop bad value.
+      if temp < -1000  or temp > 1000:
         temp = None
-    if humidity < -1000 or humidity > 1000:
+      if humidity < -1000 or humidity > 1000:
         humidity = None
-    result = {"temp":temp, "humidity":humidity}
-#    result = {"temp":float(match.group(2)), "humidity":float(match.group(1))}
+      result = {"temp":temp, "humidity":humidity}
     return result
   except IOError:
     slider.io_error_report()
