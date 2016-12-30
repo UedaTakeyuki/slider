@@ -77,13 +77,20 @@ def read():
       elif imagedevice_settings[1] == "all":
         # UVC カメラデバイスの数だけ
         devices = videodevices.videodevices_basename()
+      elif imagedevice_settings[1] == "dummy":
+        # dummy 画像の取得
+        devices = ["video0"]
+
       for videodevice in devices:
         videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
 #        filepath = '/tmp/'+now+'.jpg'
         filepath = '/tmp/'+videodevice_now+'.jpg'
         slider.msg_log( filepath)
-#        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
-        command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -D 1 -S 20 -r 320x240'
+        if imagedevice_settings[1] == "dummy":
+          command_str = 'fswebcam '+filepath+' -d TEST -r 320x240'
+        else:
+#         command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -S 20 -r 320x240'
+          command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -D 1 -S 20 -r 320x240'
         slider.msg_log( command_str)
         try:
           p = subprocess.check_call(command_str, shell=True)

@@ -12,8 +12,9 @@
 [imaging]
 # data [[イメージ種別、デバイス数、送信、保存],...]
 # イメージ種別 = [ "pic" | "movie" ]
-# デバイス数 = [ "one" | "all"]
+# デバイス数 = [ "one" | "all" | "dummy"]
 
 	[imaging.uvc]
 #	data =["pic","one","gen_pic_sender", "gen_pic_saver"]
-	data =["pic","all","gen_pic_sender", "gen_pic_saver"]
+#	data =["pic","all","gen_pic_sender", "gen_pic_saver"]
+	data =["pic","dummy","gen_pic_sender", "gen_pic_saver"]
