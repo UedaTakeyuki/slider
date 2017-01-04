@@ -69,11 +69,12 @@ def tetens(t):
     return ret
 
 def read():
-  result = dht22(29)
+  global ini
+  result = dht22(ini.get("gpio", "gpio"))
   if result is not None:
     result["humiditydeficit"] = ('%.1f' % HumidityDeficit(result["temp"],result["humidity"]))
     return result
 
 if __name__ == '__main__':
-    print dht22(29)
+  print dht22(ini.get("gpio", "gpio"))
 
