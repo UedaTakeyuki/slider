@@ -13,6 +13,7 @@ import ConfigParser
 import subprocess32 as subprocess
 import re
 import slider_utils as slider
+import json
 
 # 設定値の取得
 configfile = os.path.dirname(os.path.abspath(__file__))+'/'+os.path.splitext(os.path.basename(__file__))[0]+'.ini'
@@ -76,5 +77,5 @@ def read():
     return result
 
 if __name__ == '__main__':
-  print dht22(ini.get("gpio", "gpio"))
+  print json.dumps(dht22(ini.get("gpio", "gpio")))
 
