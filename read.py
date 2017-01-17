@@ -86,11 +86,11 @@ def read():
         filepath = '/tmp/'+videodevice_now+'.jpg'
         slider.msg_log( filepath)
         if imagedevice_settings[1] == "dummy":
-          command_str = 'fswebcam '+filepath+' -d TEST -r 320x240'
-#          command_str = os.path.dirname(os.path.abspath(__file__))+'/photographier.sh '+filepath+' dummy 320x240'
+#          command_str = 'fswebcam '+filepath+' -d TEST -r 320x240'
+          command_str = os.path.dirname(os.path.abspath(__file__))+'/photographier.sh '+filepath+' dummy 320x240'
         else:
-          command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -D 1 -S 20 -r 320x240'
-#          command_str = os.path.dirname(os.path.abspath(__file__))+'/photographier.sh '+filepath+' '+videodevice+' 320x240'
+#          command_str = 'fswebcam '+filepath+' -d /dev/'+videodevice+' -D 1 -S 20 -r 320x240'
+          command_str = os.path.dirname(os.path.abspath(__file__))+'/photographier.sh '+filepath+' '+videodevice+' 320x240'
         slider.msg_log( command_str)
         try:
           p = subprocess.check_call(command_str, shell=True)
