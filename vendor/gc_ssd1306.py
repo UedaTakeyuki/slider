@@ -5,11 +5,22 @@
 
 import gaugette.ssd1306
 import time
+import os
+import ConfigParser
+configfile = os.path.dirname(os.path.abspath(__file__))+'/gc_ssd1306.ini'
 
 ROWS = 32
 
-RESET_PIN = 15
-DC_PIN    = 16
+# 設定の取得
+ini = ConfigParser.SafeConfigParser()
+ini.read(configfile)
+
+#RESET_PIN = 15
+#RESET_PIN = 4
+RESET_PIN = int(ini.get("gpio", "reset"))
+#DC_PIN    = 16
+#DC_PIN    = 5
+DC_PIN    = int(ini.get("gpio", "dc"))
 
 
 class ssd1306:
