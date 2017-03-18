@@ -23,23 +23,22 @@ def get_gpio():
 
 
 def wait(pin):
-  global l_status, l
+  global l
   while True:
     try:
-      print "start"
+      print "waiting..."
       gpio_str = 'gpio wfi '+str(pin)+ ' rising'
       p = subprocess.call(gpio_str, shell=True)
-      print "end"
-      if l_status:
-        l.off(0)
-        pi3 or l.off(1)
-        l_status = False
-        print "off"
-      else:
-        l.on(0)
-        pi3 or l.on(1)
-        l_status = True
-        print "on"
+      l.on(0)
+      pi3 or l.on(1)
+      print "on"
+
+      gpio_str = 'gpio wfi '+str(pin)+ ' falling'
+      p = subprocess.call(gpio_str, shell=True)
+      l.off(0)
+      pi3 or l.off(1)
+      print "off"
+
     except:
       info=sys.exc_info()
       print "Unexpected error:"+ traceback.format_exc(info[0])
