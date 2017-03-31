@@ -73,20 +73,6 @@ def dec_network_ioerror():
     if g_count_of_network_ioerrors > 0:
         g_count_of_network_ioerrors -= 1
 
-def send_data(payload):
-    global ini
-    if ini.get("send", "protocol") == "http":
-        r = requests.post(ini.get("server", "url_base") + 'postdata.php', data=payload, timeout=10, verify=False)
-        msg_log("by http.")
-    elif ini.get("send", "protocol") == "mqtt":
-        mqttclient.publish(ini.get("mqtt", "topic"), json.JSONEncoder().encode(payload))
-        msg_log("by mqtt.")
-
-#serialid = gs.get_serialnumber()
-#msg_log("serialid=" + serialid)
-#version  = gv.get_version()
-#msg_log("version=" + version)
-
 def if_not_exist_then_make_folder(device, today):
     device_path = data_path+'/'+device
     if not os.path.isdir(device_path):
