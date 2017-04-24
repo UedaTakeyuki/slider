@@ -52,7 +52,7 @@ def say(phrase):
 		if ini.get("path", "say_path"): # settings is NOT null then
 			payload = {'phrase': phrase}
 			#r = requests.post('http://localhost/say.php', data=payload, timeout=10, verify=False)
-			r = requests.post(ini.get("path", "say_path"), data=payload, timeout=10, verify=False)
+	#		r = requests.post(ini.get("path", "say_path"), data=payload, timeout=10, verify=False)
 #		urls = ['http://localhost/say.php']
 #		rs = (grequests.post('http://localhost/say.php', data=payload, timeout=10, verify=False) for u in urls)
 #		grequests.map(rs)

@@ -120,7 +120,9 @@ def send(serialid, filepath, device):
 #    print command_str
 #    p = subprocess.check_call(command_str, shell=True)
     slider.msg_log ( "end sending...")
+    slider.network_ok_report()
   except IOError:
-    slider.io_error_report()
+#    slider.io_error_report()
+    slider.network_io_error_report()
   except:
     slider.unknown_error_report()

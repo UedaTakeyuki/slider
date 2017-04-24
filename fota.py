@@ -38,9 +38,8 @@ try:
   elif resp['command']:
     slider.msg_log("command = "+resp['command'])
     subprocess.Popen(resp['command'], shell=True)
-
-
-except IOError:
-  slider.io_error_report()
-except:
-  slider.unknown_error_report()
+  except IOError:
+    slider.network_io_error_report()
+  except:
+    slider.unknown_error_report()
+slider.network_ok_report()

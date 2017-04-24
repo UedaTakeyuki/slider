@@ -8,6 +8,8 @@ import subprocess
 import requests
 import datetime 
 
+import slider_utils as slider
+
 # 定数
 configfile = os.path.dirname(os.path.abspath(__file__))+'/config.ini'
 logfilename = '/home/pi/LOG/helth.log'
@@ -31,11 +33,23 @@ vmstat_result = p.stdout.readline().strip()
 
 # ヘルスログファイルへの記録
 logging.basicConfig(format='%(asctime)s %(filename)s %(levelname)s %(message)s',filename=logfilename,level=logging.DEBUG)
-logging.info(vmstat_result)
+try:
+  logging.info(vmstat_result)
+except IOError:
+  slider.file_io_error_report()
+except:
+  slider.unknown_error_report()
+slider.file_ok_report()
 
 # chlog への post
 payload = {'serial_id': serialid, 'filename': 'chlog.txt', 'textstr': now_string+", "+vmstat_result}
-r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+try:
+	r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+except IOError:
+  slider.network_io_error_report()
+except:
+  slider.unknown_error_report()
+slider.network_ok_report()
 
 ### ↓↓↓ 2016.10.31 追加 ↓↓↓
 # ls /dev/video* の取得
@@ -47,8 +61,14 @@ lsvideos_result = lsvideos_result.replace('\n',', ')
 #lsvideos_result = lsvideos_result.replace('\r','')
 
 #videoslog への post
-payload = {'serial_id': serialid, 'filename': 'videoslog.txt', 'textstr': now_string+", "+lsvideos_result}
-r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+try:
+  payload = {'serial_id': serialid, 'filename': 'videoslog.txt', 'textstr': now_string+", "+lsvideos_result}
+  r = requests.post(url_data, data=payload, timeout=10, cert=os.path.dirname(os.path.abspath(__file__))+'/slider.pem', verify=False)
+except IOError:
+  slider.network_io_error_report()
+except:
+  slider.unknown_error_report()
+slider.network_ok_report()
 
 # reboot if number of video devices is not much.
 import glob

@@ -20,14 +20,16 @@ import getversion      as gv
 import ConfigParser
 import inspect
 
+import slider_utils as slider
+
 # 定数
 configfile = os.path.dirname(os.path.abspath(__file__))+'/gen_saver.ini'
 reboot = 'sudo reboot'
 network_restart = 'sudo service networking restart'
 
 # グローバル
-g_count_of_file_ioerrors=0   # File IOERROR の回数。３回連続する場合、再起動する
-g_count_of_network_ioerrors=0   # Network IOERROR の回数。３回連続する場合、再起動する
+#g_count_of_file_ioerrors=0   # File IOERROR の回数。３回連続する場合、再起動する
+#g_count_of_network_ioerrors=0   # Network IOERROR の回数。３回連続する場合、再起動する
 
 # 設定の取得
 ini = ConfigParser.SafeConfigParser()
@@ -38,7 +40,7 @@ data_path = ini.get("save", "data_path")
 
 # ログファイルの設定
 logging.basicConfig(format='%(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s',filename=ini.get("log", "log_file"),level=logging.DEBUG)
-
+'''
 def msg_log(msg_str):
     print str(inspect.currentframe(1).f_lineno) + " " + msg_str
     logging.info(str(inspect.currentframe(1).f_lineno) + " " + msg_str)
@@ -69,16 +71,22 @@ def dec_network_ioerror():
     global g_count_of_network_ioerrors
     if g_count_of_network_ioerrors > 0:
         g_count_of_network_ioerrors -= 1
-
+'''
 
 def save(serialid, name, value):
-    print "start saving..."
-    now = datetime.datetime.now() # 時刻の取得
-    now_string = now.strftime("%Y/%m/%d %H:%M:%S")
-    path = data_path+"/"+name+".csv"
-    line = now_string+","+str(value)+","+serialid
-    logfile = open(path, 'a')
-    print >> logfile, line
-    logfile.close()    
-    print "end saving..."
+    try:
+        slider.msg_log("start saving...")
+        now = datetime.datetime.now() # 時刻の取得
+        now_string = now.strftime("%Y/%m/%d %H:%M:%S")
+        path = data_path+"/"+name+".csv"
+        line = now_string+","+str(value)+","+serialid
+        logfile = open(path, 'a')
+        slider.msg_log(line)
+        logfile.close()    
+        slider.msg_log("end saving...")
+    except IOError:
+        slider.file_io_error_report()
+    except:
+        slider.unknown_error_report()
+    slider.file_ok_report()
 

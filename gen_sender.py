@@ -116,8 +116,9 @@ def send(serialid, name, value):
     payload = {'serial_id': serialid, 'name': name, 'datetime': now_string, 'data': value}
     send_data(payload)
     slider.msg_log ("end sending...")
+    slider.network_ok_report()
   except IOError:
-    slider.io_error_report()
+#    slider.io_error_report()
+    slider.network_io_error_report()
   except:
     slider.unknown_error_report()
-
