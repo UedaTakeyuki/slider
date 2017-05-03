@@ -1,5 +1,7 @@
 *.pyc
 *.pem
+*.ini
+*.toml
 vendor/*
 !vendor/*.sh
 !vendor/*.py
