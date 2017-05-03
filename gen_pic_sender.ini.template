@@ -3,9 +3,7 @@ protocol=http
 protocol_old=mqtt
 
 [server]
-##url_base_gal3=https://klingsor.uedasoft.com/tools/151001/
-##url_base_gal4=https://klingsor.uedasoft.com/tools/151108/
-url_base=https://klingsor.uedasoft.com/tools/160613/gal4_server/
+url_base=https://server_addr/path/to/monitor/
 #url_base=http://localhost/SCRIPT/monitor/
 
 [mqtt]

@@ -8,5 +8,5 @@ temp_path=/boot/DATA
 humidity_path=/boot/DATA
 #humiditydeficit_path=/media/usb0
 humiditydeficit_path=/boot/DATA
-#CO2_path=/media/usb0
+#CO2_path=
 CO2_path=
