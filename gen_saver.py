@@ -82,6 +82,7 @@ def save(serialid, name, value):
         line = now_string+","+str(value)+","+serialid
         logfile = open(path, 'a')
         slider.msg_log(line)
+        print >> logfile, line
         logfile.close()    
         slider.msg_log("end saving...")
     except IOError:
