@@ -124,6 +124,10 @@ def read():
           except:
             slider.unknown_error_report()
 
+        # 撮影画像を move しなかった場合は明に削除
+        if os.path.exists(filepath):
+          os.remove(filepath)
+
   slider.msg_log("read.py ended.")
 
 if __name__ == '__main__':
