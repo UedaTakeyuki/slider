@@ -17,12 +17,24 @@ with open(os.path.dirname(os.path.abspath(__file__))+'/config.toml', 'rb') as fi
 
 serialid = gs.get_serialnumber()
 
+def is_rtmpbroadcast():
+  p = subprocess.Popen("sudo ps -aef | grep rtmpbroadcast | grep -v grep | wc -l", stdout=subprocess.PIPE, shell=True)
+  result = int(p.stdout.readline().strip())
+  if result == 1:
+    return True
+  else:
+    return False
 
 def read():
   ############################################################
   # sensors
   #
   slider.msg_log("read.py started.")
+
+  # rtmpbroadcast 中ならスキップ
+  if is_rtmpbroadcast():
+    slider.msg_log("conflict with rtmpbroadcast")
+    return False
 
   for sensor_name, sensor_settings in config["sensors"].items():
     slider.msg_log(sensor_name)
@@ -82,6 +94,10 @@ def read():
         devices = ["video0"]
 
       for videodevice in devices:
+        # rtmpbroadcast 中ならスキップ
+        # if is_rtmpbroadcast():
+        #   continue
+
         videodevice_now = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
         filepath = '/tmp/'+videodevice_now+'.jpg'
         slider.msg_log( filepath)
