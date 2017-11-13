@@ -29,6 +29,12 @@ Breaf architecture design of the MONITOR and SLIDERs.
   gitbook project for slider user guide.
 - [slider_lesson_text](https://github.com/UedaTakeyuki/slider_lesson_text)  
   IoT の基礎を学ぶための実践例題集
+- [slider_startup_guide](https://github.com/UedaTakeyuki/slider_startup_guide)  
+  slider startup guide
+- [slider_sensor_connection](https://github.com/UedaTakeyuki/slider_sensor_connection)  
+  document for how to connect sensors
+- [slider_settings_guide](https://github.com/UedaTakeyuki/slider_settings_guide)  
+  guide book of the slider settings
 
 ### book
 - [inexpensive_monitoring](UedaTakeyuki/inexpensive_monitoring)  
