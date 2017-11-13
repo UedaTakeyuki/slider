@@ -37,5 +37,5 @@ Breaf architecture design of the MONITOR and SLIDERs.
   guide book of the slider settings
 
 ### book
-- [inexpensive_monitoring](UedaTakeyuki/inexpensive_monitoring)  
+- [inexpensive_monitoring](https://github.com/UedaTakeyuki/inexpensive_monitoring)  
   How to Make a functional remote monitoring system by yourself
