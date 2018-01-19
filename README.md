@@ -1,7 +1,7 @@
 ![Slider](https://github.com/UedaTakeyuki/slider/blob/master/doc/sliders.png)
 # Slider
 
-##Vision
+## Vision
 A simple data collector with following abilitys:
 - gather numerical data or picture with sensors.
 - save these on the SD Card.
