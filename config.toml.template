@@ -10,6 +10,11 @@
   				["humiditydeficit","g/㎥","gen_sender","gen_saver"],
          ]
 
+  [sensors.htu21d]
+  data = [["temp","℃","gen_sender","gen_saver"],
+  				["humidity","%","gen_sender","gen_saver"],
+         ]
+
 [imaging]
 # data [[イメージ種別、デバイス数、送信、保存],...]
 # イメージ種別 = [ "pic" | "movie" ]
