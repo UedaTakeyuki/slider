@@ -52,9 +52,29 @@ class HTU21D:
 h = HTU21D()
 
 def read():
-	result = {"temp":			('%.1f' % h.temp()),
-						"humidity":	('%.1f' % h.humid())}
+	temp   = h.temp()
+	humid  = h.humid()
+	result = {"temp":			       ('%.1f' % temp),
+						"humidity":	       ('%.1f' % humid),
+						"humiditydeficit": ('%.1f' % humidityDeficit(temp,humid))}
 	return result
+
+# http://d.hatena.ne.jp/Rion778/20121203/1354546179
+def humidityDeficit(t,rh): # t: 温度, rh: 相対湿度
+	ret = absoluteHumidity(t, 100) - absoluteHumidity(t, rh)
+	return ret; 
+
+# http://d.hatena.ne.jp/Rion778/20121203/1354461231
+def absoluteHumidity(t, rh):
+	ret = 2.166740 * 100 * rh * tetens(t)/(100 * (t + 273.15))
+	return ret
+
+#  飽和水蒸気圧
+#  function GofGra(t){};
+# http://d.hatena.ne.jp/Rion778/20121126/1353861179
+def tetens(t):
+	ret = 6.11 * 10 ** (7.5*t/(t + 237.3))
+	return ret
 
 if __name__ == '__main__':
 	print (read())

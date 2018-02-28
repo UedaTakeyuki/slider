@@ -13,6 +13,7 @@
   [sensors.htu21d]
   data = [["temp","℃","gen_sender","gen_saver"],
   				["humidity","%","gen_sender","gen_saver"],
+  				["humiditydeficit","g/㎥","gen_sender","gen_saver"],
          ]
 
 [imaging]
