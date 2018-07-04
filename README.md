@@ -35,7 +35,3 @@ Breaf architecture design of the MONITOR and SLIDERs.
   document for how to connect sensors
 - [slider_settings_guide](https://github.com/UedaTakeyuki/slider_settings_guide)  
   guide book of the slider settings
-
-### book
-- [inexpensive_monitoring](https://github.com/UedaTakeyuki/inexpensive_monitoring)  
-  How to Make a functional remote monitoring system by yourself
