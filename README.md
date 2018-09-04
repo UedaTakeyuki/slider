@@ -1,6 +1,9 @@
 ![Slider](https://github.com/UedaTakeyuki/slider/blob/master/doc/sliders.png)
 # Slider
 
+##Latest version of the [MONITOR](https://github.com/UedaTakeyuki/monitor) is available
+on https://monitor.uedasoft.com, please tried using it, thx!
+
 ## Vision
 A simple data collector with following abilitys:
 - gather numerical data or picture with sensors.
